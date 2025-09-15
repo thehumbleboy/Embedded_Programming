@@ -1,0 +1,24 @@
+#include "uart.h"
+
+void UART2_Init(){
+  // RCC enable for both GPIO and UART2
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+  RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+
+  //GPIO Config
+  GPIOA->MODER |= GPIO_MODER_MODE2_1 | GPIO_MODER_MODE3_1;
+  GPIOA->AFR[0] |= AFSEL_UART2RX | AFSEL_UART2TX;
+
+  //UART Config
+  USART2->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE;
+  USART2->BRR |= 0x8B;
+
+  __NVIC_SetPriority(USART2_IRQn, 3);
+  __NVIC_EnableIRQ(USART2_IRQn);
+
+  USART2->CR1 |= USART_CR1_UE;
+}
+
+
+
+
